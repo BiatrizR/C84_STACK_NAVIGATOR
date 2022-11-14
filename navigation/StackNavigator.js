@@ -13,7 +13,7 @@ const StackNavigator = () => {
         headerShown: false
       }}
     >
-      <Stack.Screen name="Home" component={TabNavigator} />
+      <Stack.Screen name="Tab" component={TabNavigator} />
       <Stack.Screen name="StoryScreen" component={StoryScreen} />
     </Stack.Navigator>
   );
