@@ -8,13 +8,18 @@ import {
   StatusBar,
   Image,
   ScrollView,
-  Dimensions
+  Dimensions,
+  Touchable
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { RFValue } from "react-native-responsive-fontsize";
 
 import * as Font from "expo-font";
 import * as SplashScreen from 'expo-splash-screen';
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+//import do speech expo
+import * as Speech from 'expo-speech';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -41,6 +46,27 @@ export default class StoryScreen extends Component {
   componentDidMount() {
     this._loadFontsAsync();
   }
+
+  //função para converter texto em fala
+  async initiateTTS(title, author, story, moral){
+    const current_color = this.state.speakerColor;
+    this.setState({
+      //estado utilizando operado ternário
+      speakerColor: current_color === "gray" ? "#ee8249" : "gray"
+    });
+
+    if(current_color === "gray"){
+      Speech.speak(`${title} by ${author}`);
+      Speech.speak(story);
+      Speech.speak("The moral of the story is!");
+      Speech.speak(moral);
+    } 
+    else {
+      Speech.stop();
+    }
+
+  }
+
 
   render() {
     if (!this.props.route.params) {
@@ -81,12 +107,27 @@ export default class StoryScreen extends Component {
                   </Text>
                 </View>
                 <View style={styles.iconContainer}>
-                  <Ionicons
-                    name={this.state.speakerIcon}
-                    size={RFValue(30)}
-                    color={this.state.speakerColor}
-                    style={{ margin: RFValue(15) }}
-                  />
+
+                {/* Icone do auto-falante, envolver no touchable*/}
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.initiateTTS(
+                        this.props.route.params.story.title,
+                        this.props.route.params.story.author,
+                        this.props.route.params.story.story,
+                        this.props.route.params.story.moral,
+                      )
+                    }
+                  >
+                    <Ionicons
+                      name={this.state.speakerIcon}
+                      size={RFValue(30)}
+                      color={this.state.speakerColor}
+                      style={{ margin: RFValue(15) }}
+                      />
+                    </TouchableOpacity>
+
+
                 </View>
               </View>
               <View style={styles.storyTextContainer}>
